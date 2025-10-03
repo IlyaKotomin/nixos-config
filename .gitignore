@@ -1,0 +1,26 @@
+# Machine-specific config
+hardware-configuration.nix
+
+# Secrets (use sops-nix or agenix instead)
+secrets/
+*.key
+*.pem
+*.crt
+*.enc
+*.age
+*.gpg
+
+# Local overrides you might create
+*.secret.nix
+*.local.nix
+
+# Editor/IDE stuff
+*.swp
+*.swo
+.vscode/
+.idea/
+
+# Build / temporary files
+result
+result-*
+*.bak
