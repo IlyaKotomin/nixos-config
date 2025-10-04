@@ -95,13 +95,20 @@
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
 
-  # List packages installed in system profile. To search, run:
-  # $ nix search wget
+
+  environment.sessionVariables.NIXOS_OZONE_WL = "1";
+
+  xdg.portal.enable = true;
+  xdg.portal.extraPortals = [ pkgs.kdePackages.xdg-desktop-portal-kde ];
+  xdg.portal.xdgOpenUsePortal = true;  # optional
+
   environment.systemPackages = with pkgs; [
     git
     vscodium
     direnv
+    vesktop
   ];
+
 
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.
