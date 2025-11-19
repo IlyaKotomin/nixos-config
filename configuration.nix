@@ -1,35 +1,26 @@
-# Edit this configuration file to define what should be installed on
-# your system.  Help is available in the configuration.nix(5) man page
-# and in the NixOS manual (accessible by running ‘nixos-help’).
-
+# configuration.nix
 { config, pkgs, ... }:
 
 {
-  imports =
-    [ # Include the results of the hardware scan.
-      ./hardware-configuration.nix
-    ];
+  imports = [ ./hardware-configuration.nix ];
 
   # Bootloader.
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
-  networking.hostName = "nixos"; # Define your hostname.
-  # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
+  # --- Kernel: Zen for lower latency ---
+  boot.kernelPackages = pkgs.linuxPackages_zen;
+  # hardware.nvidia.package = config.boot.kernelPackages.nvidiaPackages.production;
 
-  # Configure network proxy if necessary
-  # networking.proxy.default = "http://user:password@proxy:port/";
-  # networking.proxy.noProxy = "127.0.0.1,localhost,internal.domain";
+  # Prefer modern AMD CPU frequency driver
+  boot.kernelParams = [ "amd_pstate=active" ];
 
-  # Enable networking
+  networking.hostName = "nixos";
   networking.networkmanager.enable = true;
 
-  # Set your time zone.
   time.timeZone = "Europe/Sofia";
 
-  # Select internationalisation properties.
   i18n.defaultLocale = "en_US.UTF-8";
-
   i18n.extraLocaleSettings = {
     LC_ADDRESS = "bg_BG.UTF-8";
     LC_IDENTIFICATION = "bg_BG.UTF-8";
@@ -42,99 +33,111 @@
     LC_TIME = "bg_BG.UTF-8";
   };
 
-  # Enable the X11 windowing system.
-  # You can disable this if you're only using the Wayland session.
+  # GUI
   services.xserver.enable = true;
-
-  # Enable the KDE Plasma Desktop Environment.
   services.displayManager.sddm.enable = true;
   services.desktopManager.plasma6.enable = true;
 
-  # Configure keymap in X11
   services.xserver.xkb = {
-    layout = "us";
+    layout = "us, ru";
     variant = "";
+    xkbOptions = "grp:alt_shift_toggle";
   };
 
-  # Enable CUPS to print documents.
   services.printing.enable = true;
 
-  # Enable sound with pipewire.
+  # Audio
   services.pulseaudio.enable = false;
   security.rtkit.enable = true;
   services.pipewire = {
     enable = true;
     alsa.enable = true;
-    alsa.support32Bit = true;
+    alsa.support32Bit = true; # Proton/older games need this
     pulse.enable = true;
-    # If you want to use JACK applications, uncomment this
-    #jack.enable = true;
-
-    # use the example session manager (no others are packaged yet so this is enabled by default,
-    # no need to redefine it in your config for now)
-    #media-session.enable = true;
   };
 
-  # Enable touchpad support (enabled default in most desktopManager).
-  # services.xserver.libinput.enable = true;
+  # === GPU & Graphics (Vulkan/OpenGL + 32-bit) ===
+  hardware.graphics = {
+    enable = true;
+    enable32Bit = true;
+    extraPackages = with pkgs; [ vaapiVdpau libvdpau-va-gl ];
+    extraPackages32 = with pkgs.pkgsi686Linux; [ vaapiVdpau ];
+  };
 
-  # Define a user account. Don't forget to set a password with ‘passwd’.
+  # --- NVIDIA discrete setup (Ampere: RTX 3070 Mobile) ---
+  services.xserver.videoDrivers = [ "nvidia" ];
+  hardware.nvidia = {
+    modesetting.enable = true;
+    powerManagement.enable = true;    # better thermals on laptops
+    nvidiaSettings = true;            # nvidia-settings GUI
+    open = false;                     # <-- closed kernel module (builds fine with Zen)
+    # package = config.boot.kernelPackages.nvidiaPackages.production; # default driver
+  };
+
+  # === Steam & Gaming QoL ===
+  nixpkgs.config.allowUnfree = true;
+
+  programs.firefox.enable = true;
+
+  programs.steam = {
+    enable = true;
+    # gamescopeSession.enable = true;  # leave off unless you want it as your default session
+    remotePlay.openFirewall = true;
+    localNetworkGameTransfers.openFirewall = true;
+  };
+
+  hardware.steam-hardware.enable = true;     # udev rules for controllers
+  # hardware.xpadneo.enable = true;          # uncomment if you use Xbox BT controllers
+
+  programs.gamemode.enable = true;
+
+  # Let Gamemode toggle power profiles for you
+  services.power-profiles-daemon.enable = true;
+
+  # Gamescope compositor (for pacing/upscaling)
+  programs.gamescope = {
+    enable = true;
+    capSysNice = true;  # small latency/scheduling improvement
+  };
+
+  # Wayland: Steam + Electron apps
+  environment.sessionVariables = {
+    NIXOS_OZONE_WL = "1";
+  };
+
+  xdg.portal.enable = true;
+  xdg.portal.extraPortals = [ pkgs.kdePackages.xdg-desktop-portal-kde ];
+  xdg.portal.xdgOpenUsePortal = true;
+
+  # --- Compressed RAM swap to avoid rare stalls ---
+  zramSwap = {
+    enable = true;
+    algorithm = "zstd";
+    memoryPercent = 25;
+  };
+
+  # --- User & packages ---
   users.users.kotoxik = {
     isNormalUser = true;
     description = "kotoxik";
     extraGroups = [ "networkmanager" "wheel" ];
     packages = with pkgs; [
       kdePackages.kate
-    #  thunderbird
+      goverlay          # GUI for MangoHud/Gamescope
+      protonup-qt       # Proton-GE installer
+      protontricks      # Winetricks-like for Proton
     ];
   };
-
-  # Install firefox.
-  programs.firefox.enable = true;
-
-  # Allow unfree packages
-  nixpkgs.config.allowUnfree = true;
-
-
-  environment.sessionVariables.NIXOS_OZONE_WL = "1";
-
-  xdg.portal.enable = true;
-  xdg.portal.extraPortals = [ pkgs.kdePackages.xdg-desktop-portal-kde ];
-  xdg.portal.xdgOpenUsePortal = true;  # optional
 
   environment.systemPackages = with pkgs; [
     git
     vscodium
     direnv
     vesktop
+    mangohud       # use via launch options (no module on this channel)
+    gamescope
+    vulkan-tools   # vulkaninfo / vkcube
   ];
 
-
-  # Some programs need SUID wrappers, can be configured further or are
-  # started in user sessions.
-  # programs.mtr.enable = true;
-  # programs.gnupg.agent = {
-  #   enable = true;
-  #   enableSSHSupport = true;
-  # };
-
-  # List services that you want to enable:
-
-  # Enable the OpenSSH daemon.
-  # services.openssh.enable = true;
-
-  # Open ports in the firewall.
-  # networking.firewall.allowedTCPPorts = [ ... ];
-  # networking.firewall.allowedUDPPorts = [ ... ];
-  # Or disable the firewall altogether.
-  # networking.firewall.enable = false;
-
-  # This value determines the NixOS release from which the default
-  # settings for stateful data, like file locations and database versions
-  # on your system were taken. It‘s perfectly fine and recommended to leave
-  # this value at the release version of the first install of this system.
-  # Before changing this value read the documentation for this option
-  # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
-  system.stateVersion = "25.05"; # Did you read the comment?
-
+  system.stateVersion = "25.05";
 }
