@@ -1,8 +1,10 @@
-# Machine-specific config
-hardware-configuration.nix
+# Machine-specific config (keep hardware configs in version control for this multi-host setup)
+# hardware-configuration.nix
 
-# Secrets (use sops-nix or agenix instead)
-secrets/
+# Secrets yaml folder (encrypted files are safe to commit)
+/secrets/*.yaml
+!/secrets/secrets.yaml
+!/secrets/secrets.yaml.example
 *.key
 *.pem
 *.crt

@@ -1,0 +1,20 @@
+# SOPS Configuration
+# Documentation: https://github.com/getsops/sops
+# Local docs: docs/SECRETS.md
+
+keys:
+  # User key for editing secrets
+  - &user_kotoxik age1u7ntlf2jl076ya48gjsw38x05l7w7gpepw7a8q6n36th0m0led7qzh7f8e
+
+  # Machine keys (add after first boot)
+  # Get key: sudo cat /var/lib/sops-nix/key.txt | age-keygen -y
+  # - &host_lenovo age1...
+  # - &host_surface age1...
+
+creation_rules:
+  - path_regex: secrets/secrets\.yaml$
+    key_groups:
+      - age:
+          - *user_kotoxik
+          # - *host_lenovo
+          # - *host_surface
