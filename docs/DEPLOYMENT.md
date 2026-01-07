@@ -2,6 +2,33 @@
 
 How to deploy, update, and maintain your NixOS configurations.
 
+## First-Time Setup
+
+### 1. Initial Rebuild
+
+```bash
+cd ~/nixos-config
+sudo nixos-rebuild switch --flake .#lenovo-legion  # or surface-pro
+```
+
+### 2. Register Machine Key for Secrets
+
+After first boot, sops-nix generates a machine key. Add it to `.sops.yaml`:
+
+```bash
+# Get machine's public key
+sudo cat /var/lib/sops-nix/key.txt | age-keygen -y
+
+# Add the key to .sops.yaml under keys section
+# Then re-encrypt secrets with new key
+sops updatekeys secrets/secrets.yaml
+
+# Rebuild to apply secrets
+sudo nixos-rebuild switch --flake .#lenovo-legion
+```
+
+Repeat on each machine (lenovo-legion, surface-pro).
+
 ## Prerequisites
 
 ### SSH Key Setup

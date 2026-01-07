@@ -16,18 +16,7 @@
       "audio"        # Audio devices access
     ];
     
-    # User-specific packages
-    packages = with pkgs; [
-      kdePackages.kate
-      
-      # Communication
-      vencord
-      slack
-      telegram-desktop
-      
-      # Utilities
-      qbittorrent
-      spotify
-    ];
+    # User-specific packages are now managed by Home Manager
+    # See: home/kotoxik/programs.nix
   };
 }

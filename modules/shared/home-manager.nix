@@ -21,7 +21,7 @@
       programs.home-manager.enable = true;
 
       # Home state version - don't change after initial setup
-      home.stateVersion = "24.11";
+      home.stateVersion = "25.11";
 
       # User-specific packages managed by Home Manager
       home.packages = with pkgs; [

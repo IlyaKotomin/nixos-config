@@ -37,7 +37,7 @@
         ./modules/shared/base.nix
         ./modules/shared/networking.nix
         ./modules/shared/users.nix
-        ./modules/shared/home-manager.nix
+        ./home  # Home Manager configuration
         ./modules/shared/secrets
       ];
       
@@ -101,6 +101,11 @@
         # Update only surface-pro remotely
         updateSurface = nixpkgs.legacyPackages.${system}.writeShellScriptBin "update-surface" ''
           ${builtins.readFile ./scripts/update-surface.sh}
+        '';
+
+        # Update only lenovo legion remotely
+        updateLenovo = nixpkgs.legacyPackages.${system}.writeShellScriptBin "update-lenovo" ''
+          ${builtins.readFile ./scripts/update-lenovo.sh}
         '';
       };
     };
