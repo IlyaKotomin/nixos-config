@@ -1,7 +1,24 @@
 { config, lib, pkgs, ... }:
 
+let
+  cfg = config.modules.virtualisation;
+in
 {
-  # KVM support (no full libvirt)
-  boot.kernelModules = [ "kvm-amd" ]; # Use "kvm-intel" for Intel CPUs
-  virtualisation.libvirtd.enable = false;
+  options.modules.virtualisation = {
+    enable = lib.mkEnableOption "KVM virtualization support";
+    
+    kvmType = lib.mkOption {
+      type = lib.types.enum [ "intel" "amd" ];
+      default = "amd";
+      description = "Type of KVM module to load (intel or amd)";
+    };
+  };
+
+  config = lib.mkIf cfg.enable {
+    # KVM support (no full libvirt)
+    boot.kernelModules = [ 
+      (if cfg.kvmType == "intel" then "kvm-intel" else "kvm-amd")
+    ];
+    virtualisation.libvirtd.enable = false;
+  };
 }

@@ -68,48 +68,6 @@
     };
   };
 
-  # Vim configuration
-  programs.vim = {
-    enable = true;
-    defaultEditor = true;
-    
-    settings = {
-      number = true;
-      relativenumber = true;
-      expandtab = true;
-      tabstop = 2;
-      shiftwidth = 2;
-      mouse = "a";
-    };
-
-    extraConfig = ''
-      " Enable syntax highlighting
-      syntax on
-      
-      " Search settings
-      set hlsearch
-      set incsearch
-      set ignorecase
-      set smartcase
-      
-      " Visual settings
-      set cursorline
-      set showmatch
-      set wildmenu
-      
-      " Backup settings
-      set nobackup
-      set nowritebackup
-      set noswapfile
-      
-      " Allow backspace in insert mode
-      set backspace=indent,eol,start
-      
-      " Status line
-      set laststatus=2
-    '';
-  };
-
   # Btop system monitor
   programs.btop = {
     enable = true;

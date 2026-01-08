@@ -24,7 +24,6 @@
       
       # Core settings
       core = {
-        editor = "vim";
         autocrlf = "input";
       };
     };

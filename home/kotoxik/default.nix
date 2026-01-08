@@ -25,7 +25,6 @@
 
   # Session variables
   home.sessionVariables = {
-    EDITOR = "vim";
     VISUAL = "code";
   };
 

@@ -78,11 +78,9 @@
   environment.systemPackages = with pkgs; [
     # Essential utilities
     git
-    vim
     wget
     curl
     htop
-    btop
     tree
     unzip
     zip
