@@ -23,7 +23,6 @@ in
     # Uncomment in host config if needed
     
     # Version control (system-wide)
-    git
     git-lfs
     github-desktop
   ];

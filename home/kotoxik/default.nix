@@ -13,7 +13,7 @@
   programs.home-manager.enable = true;
 
   # Home state version - don't change after initial setup
-  home.stateVersion = "25.11";
+  home.stateVersion = "24.11";
 
   # User info
   home.username = "kotoxik";
