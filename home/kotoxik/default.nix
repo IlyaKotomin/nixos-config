@@ -1,12 +1,13 @@
-{ config, lib, pkgs, ... }:
+{ config, lib, pkgs, hostName, ... }:
 
 {
   imports = [
-    ./programs.nix
-    ./shell.nix
-    ./git.nix
-    ./development.nix
-    ./desktop.nix
+    ../common
+    ../desktop
+  ] ++ lib.optionals (hostName == "lenovo-legion") [
+    ../hosts/lenovo-legion.nix
+  ] ++ lib.optionals (hostName == "surface-pro") [
+    ../hosts/surface-pro.nix
   ];
 
   # Let Home Manager manage itself
@@ -24,7 +25,6 @@
 
   # Session variables
   home.sessionVariables = {
-    EDITOR = "vim";
     VISUAL = "code";
   };
 

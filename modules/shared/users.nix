@@ -1,22 +1,34 @@
 { config, lib, pkgs, ... }:
 
+let
+  cfg = config.modules.users.kotoxik;
+in
 {
-  users.users.kotoxik = {
-    isNormalUser = true;
-    description = "kotoxik";
-    extraGroups = [
-      "networkmanager"
-      "wheel"
-      "docker"
-      "dialout"      # Serial port access
-      "uucp"         # Alternative serial port group
-      "adbusers"     # Android Debug Bridge
-      "kvm"          # Virtualization
-      "video"        # Video devices access
-      "audio"        # Audio devices access
-    ];
+  options.modules.users.kotoxik = {
+    enable = lib.mkEnableOption "kotoxik user account" // {
+      default = true;
+    };
     
-    # User-specific packages are now managed by Home Manager
-    # See: home/kotoxik/programs.nix
+    extraGroups = lib.mkOption {
+      type = lib.types.listOf lib.types.str;
+      default = [
+        "networkmanager"
+        "wheel"
+        "video"        # Video devices access
+        "audio"        # Audio devices access
+      ];
+      description = "Additional groups for the user";
+    };
+  };
+
+  config = lib.mkIf cfg.enable {
+    users.users.kotoxik = {
+      isNormalUser = true;
+      description = "kotoxik";
+      extraGroups = cfg.extraGroups;
+      
+      # User-specific packages are now managed by Home Manager
+      # See: home/common/
+    };
   };
 }

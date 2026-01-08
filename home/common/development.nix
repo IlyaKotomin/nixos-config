@@ -5,9 +5,9 @@
   home.packages = with pkgs; [
     # SDKs and runtimes
     nodejs_22
-    nodePackages.npm
-    nodePackages.yarn
-    nodePackages.pnpm
+    nodePackages_22.npm
+    nodePackages_22.yarn
+    nodePackages_22.pnpm
     
     # CLI tools for development
     jq              # JSON processor
@@ -66,48 +66,6 @@
       "git.autofetch" = true;
       "git.confirmSync" = false;
     };
-  };
-
-  # Vim configuration
-  programs.vim = {
-    enable = true;
-    defaultEditor = true;
-    
-    settings = {
-      number = true;
-      relativenumber = true;
-      expandtab = true;
-      tabstop = 2;
-      shiftwidth = 2;
-      mouse = "a";
-    };
-
-    extraConfig = ''
-      " Enable syntax highlighting
-      syntax on
-      
-      " Search settings
-      set hlsearch
-      set incsearch
-      set ignorecase
-      set smartcase
-      
-      " Visual settings
-      set cursorline
-      set showmatch
-      set wildmenu
-      
-      " Backup settings
-      set nobackup
-      set nowritebackup
-      set noswapfile
-      
-      " Allow backspace in insert mode
-      set backspace=indent,eol,start
-      
-      " Status line
-      set laststatus=2
-    '';
   };
 
   # Btop system monitor

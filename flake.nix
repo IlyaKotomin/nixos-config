@@ -21,90 +21,53 @@
   outputs = { self, nixpkgs, nixpkgs-stable, nixos-hardware, home-manager, sops-nix, ... }@inputs:
     let
       system = "x86_64-linux";
-      
-      # Import custom packages overlay
-      packagesOverlay = final: prev: {
-        azureFunctionsCli = prev.callPackage ./packages/azure-functions-cli-bin.nix { };
-        platformioFHS = prev.callPackage ./packages/platformio-fhs.nix { };
-        androidSdkCustom = prev.callPackage ./packages/android-sdk.nix { };
-      };
-      
-      # Common configuration for both hosts
-      commonModules = [
-        { nixpkgs.overlays = [ packagesOverlay ]; }
-        home-manager.nixosModules.home-manager
-        sops-nix.nixosModules.sops
-        ./modules/shared/base.nix
-        ./modules/shared/networking.nix
-        ./modules/shared/users.nix
-        ./home  # Home Manager configuration
-        ./modules/shared/secrets
-      ];
+      pkgs = nixpkgs.legacyPackages.${system};
       
     in {
+      # Formatter for `nix fmt`
+      formatter.${system} = pkgs.nixpkgs-fmt;
+      
+      # Development shell
+      devShells.${system}.default = pkgs.mkShell {
+        packages = with pkgs; [
+          nil           # Nix LSP
+          nixpkgs-fmt   # Nix formatter
+          sops          # Secrets management
+          age           # Encryption
+        ];
+        
+        shellHook = ''
+          echo "NixOS Configuration Development Shell"
+          echo "Available commands:"
+          echo "  nix fmt           - Format nix files"
+          echo "  nix flake check   - Check flake"
+          echo "  nixos-rebuild     - Rebuild system"
+        '';
+      };
+      
+      # NixOS configurations
       nixosConfigurations = {
         # Lenovo Legion 5 Pro (Gaming + Development workstation)
-        lenovo-legion = nixpkgs.lib.nixosSystem {
-          inherit system;
-          specialArgs = { inherit inputs; };
-          modules = commonModules ++ [
-            # Hardware-specific
-            nixos-hardware.nixosModules.lenovo-legion-16ach6h
-            ./hosts/lenovo-legion/hardware-configuration.nix
-            
-            # Host-specific configuration
-            ./hosts/lenovo-legion/configuration.nix
-            
-            # Feature modules
-            ./modules/desktop/kde.nix
-            ./modules/desktop/hyprland.nix
-            ./modules/desktop/gaming.nix
-            ./modules/development/embedded.nix
-            ./modules/development/mobile.nix
-            ./modules/development/general.nix
-            ./modules/shared/docker.nix
-            ./modules/shared/virtualisation.nix
-          ];
-        };
+        lenovo-legion = import ./hosts/lenovo-legion { inherit inputs system; };
         
         # Microsoft Surface Pro 7 (Portable productivity device)
-        surface-pro = nixpkgs.lib.nixosSystem {
-          inherit system;
-          specialArgs = { inherit inputs; };
-          modules = commonModules ++ [
-            # Hardware-specific - MUST be before surface-specific.nix
-            nixos-hardware.nixosModules.microsoft-surface-common
-            ./hosts/surface-pro/hardware-configuration.nix
-            
-            # Host-specific configuration
-            ./hosts/surface-pro/configuration.nix
-            
-            # Surface-specific module (requires nixos-hardware module above)
-            ./modules/shared/surface-specific.nix
-            
-            # Feature modules
-            ./modules/desktop/kde.nix
-            ./modules/desktop/hyprland.nix
-            ./modules/development/general.nix
-            ./modules/shared/docker.nix
-          ];
-        };
+        surface-pro = import ./hosts/surface-pro { inherit inputs system; };
       };
       
       # Deployment helpers
       deploy = {
         # Update both machines from lenovo-legion
-        updateAll = nixpkgs.legacyPackages.${system}.writeShellScriptBin "update-all" ''
+        updateAll = pkgs.writeShellScriptBin "update-all" ''
           ${builtins.readFile ./scripts/update-all.sh}
         '';
         
         # Update only surface-pro remotely
-        updateSurface = nixpkgs.legacyPackages.${system}.writeShellScriptBin "update-surface" ''
+        updateSurface = pkgs.writeShellScriptBin "update-surface" ''
           ${builtins.readFile ./scripts/update-surface.sh}
         '';
 
         # Update only lenovo legion remotely
-        updateLenovo = nixpkgs.legacyPackages.${system}.writeShellScriptBin "update-lenovo" ''
+        updateLenovo = pkgs.writeShellScriptBin "update-lenovo" ''
           ${builtins.readFile ./scripts/update-lenovo.sh}
         '';
       };

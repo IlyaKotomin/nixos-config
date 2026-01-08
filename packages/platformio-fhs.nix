@@ -1,6 +1,22 @@
-{ pkgs ? import <nixpkgs> {} }:
+{ buildFHSEnv
+, platformio-core
+, python3
+, python3Packages
+, git
+, gcc
+, gnumake
+, cmake
+, ninja
+, stdenv
+, zlib
+, libusb1
+, libftdi1
+, picocom
+, minicom
+, cacert
+}:
 
-pkgs.buildFHSEnv {
+buildFHSEnv {
   name = "platformio";
   
   targetPkgs = pkgs: with pkgs; [
@@ -36,6 +52,6 @@ pkgs.buildFHSEnv {
   
   profile = ''
     export PLATFORMIO_CORE_DIR="$HOME/.platformio"
-    export SSL_CERT_FILE="${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt"
+    export SSL_CERT_FILE="${cacert}/etc/ssl/certs/ca-bundle.crt"
   '';
 }

@@ -25,9 +25,7 @@
     fzf
     tldr
     
-    # Archive tools
-    unzip
-    zip
+    # Archive tools (p7zip only, unzip/zip are system-wide)
     p7zip
   ];
 }
