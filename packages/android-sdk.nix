@@ -1,7 +1,7 @@
-{ pkgs ? import <nixpkgs> {} }:
+{ androidenv }:
 
 let
-  androidComposition = pkgs.androidenv.composeAndroidPackages {
+  androidComposition = androidenv.composeAndroidPackages {
     # Build tools and platforms for React Native/Expo
     # Include latest stable versions
     buildToolsVersions = [ "35.0.0" "34.0.0" "33.0.2" "30.0.3" ];
