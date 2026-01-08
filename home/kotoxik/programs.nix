@@ -25,9 +25,7 @@
     fzf
     tldr
     
-    # Archive tools
-    unzip
-    zip
+    # Archive tools (7zip only, unzip/zip are in base.nix)
     p7zip
   ];
 }

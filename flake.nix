@@ -3,7 +3,7 @@
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
-    nixpkgs-stable.url = "github:NixOS/nixpkgs/nixos-25.11";
+    nixpkgs-stable.url = "github:NixOS/nixpkgs/nixos-24.11";
     
     nixos-hardware.url = "github:NixOS/nixos-hardware/master";
     
@@ -107,6 +107,16 @@
         updateLenovo = nixpkgs.legacyPackages.${system}.writeShellScriptBin "update-lenovo" ''
           ${builtins.readFile ./scripts/update-lenovo.sh}
         '';
+      };
+      
+      # Formatter for `nix fmt`
+      formatter.${system} = nixpkgs.legacyPackages.${system}.nixpkgs-fmt;
+      
+      # Checks for CI
+      checks.${system} = {
+        # Check that configurations build
+        lenovo-legion-config = self.nixosConfigurations.lenovo-legion.config.system.build.toplevel;
+        surface-pro-config = self.nixosConfigurations.surface-pro.config.system.build.toplevel;
       };
     };
 }
