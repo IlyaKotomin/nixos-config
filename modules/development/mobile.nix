@@ -34,7 +34,7 @@ in
       
       # React Native / Expo
       watchman            # File watching for React Native
-      nodePackages.eas-cli # Expo Application Services CLI
+      nodePackages_22.eas-cli # Expo Application Services CLI
       # Note: expo-cli is deprecated, use 'npx expo' instead
       
       # Build tools

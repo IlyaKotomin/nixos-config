@@ -5,9 +5,9 @@
   home.packages = with pkgs; [
     # SDKs and runtimes
     nodejs_22
-    nodePackages.npm
-    nodePackages.yarn
-    nodePackages.pnpm
+    nodePackages_22.npm
+    nodePackages_22.yarn
+    nodePackages_22.pnpm
     
     # CLI tools for development
     jq              # JSON processor
