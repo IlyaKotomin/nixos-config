@@ -10,7 +10,9 @@
     useUserPackages = true;
     
     # Pass additional arguments to home-manager modules
-    extraSpecialArgs = { };
+    extraSpecialArgs = {
+      inherit (config.networking) hostName;
+    };
     
     # Backup existing files instead of erroring
     backupFileExtension = "backup";

@@ -20,9 +20,4 @@
       generateKey = true;
     };
   };
-
-  # Age key setup via home-manager
-  home-manager.users.kotoxik = { pkgs, ... }: {
-    home.file.".config/sops/age/.keep".text = "";
-  };
 }
