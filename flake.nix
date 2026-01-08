@@ -108,5 +108,15 @@
           ${builtins.readFile ./scripts/update-lenovo.sh}
         '';
       };
+      
+      # Formatter for `nix fmt`
+      formatter.${system} = nixpkgs.legacyPackages.${system}.nixpkgs-fmt;
+      
+      # Checks for CI
+      checks.${system} = {
+        # Check that configurations build
+        lenovo-legion-config = self.nixosConfigurations.lenovo-legion.config.system.build.toplevel;
+        surface-pro-config = self.nixosConfigurations.surface-pro.config.system.build.toplevel;
+      };
     };
 }

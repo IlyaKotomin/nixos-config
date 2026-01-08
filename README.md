@@ -1,5 +1,10 @@
 # NixOS Configuration
 
+[![NixOS](https://img.shields.io/badge/NixOS-24.11-blue.svg?style=flat&logo=nixos&logoColor=white)](https://nixos.org)
+[![Nix Flakes](https://img.shields.io/badge/Nix-Flakes-blue.svg?style=flat&logo=nixos&logoColor=white)](https://nixos.wiki/wiki/Flakes)
+[![Home Manager](https://img.shields.io/badge/Home-Manager-blue.svg?style=flat)](https://github.com/nix-community/home-manager)
+[![Built with](https://img.shields.io/badge/Built%20with-%E2%9D%A4%EF%B8%8F-red.svg?style=flat)](https://nixos.org)
+
 Multi-host NixOS configuration for Lenovo Legion 5 Pro and Microsoft Surface Pro 7.
 
 ## 🚀 Quick Links
@@ -91,6 +96,11 @@ nixos-config/
 
 ## 🚀 Quick Start
 
+### Prerequisites
+- NixOS installed (or ready to install)
+- Git configured
+- SSH access set up between machines (for remote deployment)
+
 ### 1. Initial Setup (Lenovo)
 
 ```bash
@@ -111,16 +121,17 @@ sudo nixos-rebuild switch --flake .#lenovo-legion
 ./scripts/update-all.sh
 ```
 
-For detailed instructions, see [Quick Start Guide](./docs/QUICK-START.md).
+For detailed instructions, see [Quick Start Guide](./docs/QUICK-START.md) and [Architecture Documentation](./docs/ARCHITECTURE.md).
 
 ## 📚 Documentation
 
-- **[README.md](./docs/README.md)** - Full documentation overview
-- **[QUICK-START.md](./docs/QUICK-START.md)** - Setup instructions
-- **[DEPLOYMENT.md](./docs/DEPLOYMENT.md)** - Deployment workflows
-- **[CODE-STYLE.md](./docs/CODE-STYLE.md)** - Coding standards
-- **[TROUBLESHOOTING.md](./docs/TROUBLESHOOTING.md)** - Common issues
-- **[HARDWARE-NOTES.md](./docs/HARDWARE-NOTES.md)** - Hardware details
+- **[📖 Full Documentation](./docs/README.md)** - Complete documentation
+- **[🏗️ Architecture](./docs/ARCHITECTURE.md)** - System design and structure
+- **[⚡ Quick Start](./docs/QUICK-START.md)** - Get started in minutes
+- **[🚢 Deployment Guide](./docs/DEPLOYMENT.md)** - Update and maintain systems
+- **[💻 Hardware Notes](./docs/HARDWARE-NOTES.md)** - Hardware-specific information
+- **[🐛 Troubleshooting](./docs/TROUBLESHOOTING.md)** - Fix common issues
+- **[📝 Code Style](./docs/CODE-STYLE.md)** - Contribution guidelines
 
 ## 🤝 Contributing
 

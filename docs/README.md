@@ -5,6 +5,7 @@ A modular, maintainable NixOS configuration for managing multiple machines: Leno
 ## 📋 Table of Contents
 
 - [Overview](#overview)
+- [Architecture](#architecture)
 - [Directory Structure](#directory-structure)
 - [Features](#features)
 - [Quick Start](#quick-start)
@@ -14,6 +15,8 @@ A modular, maintainable NixOS configuration for managing multiple machines: Leno
 ## 🎯 Overview
 
 This configuration supports two machines with different use cases:
+
+**Want to understand how it all works?** See the [Architecture Documentation](./ARCHITECTURE.md) for a deep dive into the system design.
 
 ### Lenovo Legion 5 Pro (16ach6h)
 - **Purpose**: Primary gaming and development workstation
@@ -44,6 +47,8 @@ This configuration supports two machines with different use cases:
 
 ## 📁 Directory Structure
 
+**For a detailed explanation of the architecture and how modules work, see [ARCHITECTURE.md](./ARCHITECTURE.md).**
+
 ```
 nixos-config/
 ├── flake.nix                 # Main flake configuration
@@ -64,7 +69,8 @@ nixos-config/
 │   │   ├── users.nix        # User accounts
 │   │   ├── docker.nix       # Docker and Azurite
 │   │   ├── virtualisation.nix
-│   │   └── surface-specific.nix
+│   │   ├── surface-specific.nix
+│   │   └── secrets/         # Encrypted secrets (sops-nix)
 │   ├── desktop/             # Desktop environments
 │   │   ├── kde.nix          # KDE Plasma 6
 │   │   ├── hyprland.nix     # Hyprland compositor
@@ -74,6 +80,17 @@ nixos-config/
 │       ├── mobile.nix       # Android/React Native
 │       └── embedded.nix     # PlatformIO/embedded
 │
+├── home/                    # Home Manager (user) configuration
+│   ├── default.nix         # Home Manager integration
+│   └── kotoxik/            # User-specific config
+│       ├── default.nix
+│       ├── programs.nix
+│       ├── development.nix
+│       ├── desktop.nix
+│       ├── hyprland.nix
+│       ├── git.nix
+│       └── shell.nix
+│
 ├── packages/                # Custom package definitions
 │   ├── android-sdk.nix
 │   ├── azure-functions-cli-bin.nix
@@ -81,13 +98,18 @@ nixos-config/
 │
 ├── scripts/                 # Deployment and utility scripts
 │   ├── update-all.sh       # Update both machines
-│   └── update-surface.sh   # Update Surface only
+│   ├── update-surface.sh   # Update Surface only
+│   └── update-lenovo.sh    # Update Lenovo only
 │
+├── .editorconfig           # Editor configuration
 └── docs/                    # Documentation
     ├── README.md           # This file
+    ├── ARCHITECTURE.md     # System architecture and design
     ├── QUICK-START.md      # Getting started guide
     ├── DEPLOYMENT.md       # Deployment instructions
+    ├── HARDWARE-NOTES.md   # Hardware-specific information
     ├── CODE-STYLE.md       # Coding conventions
+    ├── SECRETS.md          # Secrets management guide
     └── TROUBLESHOOTING.md  # Common issues and fixes
 ```
 
@@ -169,9 +191,15 @@ This will:
 
 ## 📚 Documentation
 
+### Core Documentation
+- **[ARCHITECTURE.md](./ARCHITECTURE.md)** - System design, module system, build process
+- **[HARDWARE-NOTES.md](./HARDWARE-NOTES.md)** - Hardware specifications, quirks, optimizations
 - **[QUICK-START.md](./QUICK-START.md)** - Initial setup and installation
 - **[DEPLOYMENT.md](./DEPLOYMENT.md)** - How to deploy and update systems
+
+### Additional Resources
 - **[CODE-STYLE.md](./CODE-STYLE.md)** - Coding conventions and best practices
+- **[SECRETS.md](./SECRETS.md)** - Secrets management with sops-nix
 - **[TROUBLESHOOTING.md](./TROUBLESHOOTING.md)** - Common issues and solutions
 
 ## 🤝 Contributing
